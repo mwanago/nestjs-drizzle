@@ -1,0 +1,13 @@
+{
+  "version": "6",
+  "dialect": "postgresql",
+  "entries": [
+    {
+      "idx": 0,
+      "version": "6",
+      "when": 1715913771482,
+      "tag": "0000_create-articles-table",
+      "breakpoints": true
+    }
+  ]
+}
