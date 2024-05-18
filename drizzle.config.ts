@@ -7,7 +7,7 @@ config();
 const configService = new ConfigService();
 
 export default defineConfig({
-  schema: './src/database/databaseSchema.ts',
+  schema: './src/database/database-schema.ts',
   out: './drizzle',
   dialect: 'postgresql',
   dbCredentials: {
