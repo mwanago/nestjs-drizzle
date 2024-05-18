@@ -4,7 +4,7 @@ import {
   CONNECTION_POOL,
   DATABASE_OPTIONS,
 } from './database.module-definition';
-import { DatabaseOptions } from './databaseOptions';
+import { DatabaseOptions } from './database-options';
 import { Pool } from 'pg';
 import { DrizzleService } from './drizzle.service';
 
