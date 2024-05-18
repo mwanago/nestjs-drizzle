@@ -1,8 +1,6 @@
 import { defineConfig } from 'drizzle-kit';
 import { ConfigService } from '@nestjs/config';
-import { config } from 'dotenv';
-
-config();
+import 'dotenv/config';
 
 const configService = new ConfigService();
 

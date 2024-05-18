@@ -9,4 +9,3 @@ export const articles = pgTable('articles', {
 export const databaseSchema = {
   articles,
 };
-
