@@ -1,4 +1,4 @@
-import { serial, text, pgTable } from 'drizzle-orm/pg-core';
+import { serial, text, integer, pgTable } from 'drizzle-orm/pg-core';
 
 export const articles = pgTable('articles', {
   id: serial('id').primaryKey(),
@@ -6,6 +6,25 @@ export const articles = pgTable('articles', {
   content: text('content'),
 });
 
+export const addresses = pgTable('addresses', {
+  id: serial('id').primaryKey(),
+  street: text('street'),
+  city: text('city'),
+  country: text('country'),
+});
+
+export const users = pgTable('users', {
+  id: serial('id').primaryKey(),
+  email: text('email'),
+  name: text('name'),
+  password: text('password'),
+  addressId: integer('address_id')
+    .unique()
+    .references(() => addresses.id),
+});
+
 export const databaseSchema = {
   articles,
+  addresses,
+  users,
 };

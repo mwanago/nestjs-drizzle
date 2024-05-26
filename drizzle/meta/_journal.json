@@ -8,6 +8,13 @@
       "when": 1715913771482,
       "tag": "0000_create-articles-table",
       "breakpoints": true
+    },
+    {
+      "idx": 1,
+      "version": "6",
+      "when": 1716757205062,
+      "tag": "0001_create-users-and-addresses-tables",
+      "breakpoints": true
     }
   ]
 }
