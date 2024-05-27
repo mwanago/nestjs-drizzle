@@ -1,5 +1,5 @@
 {
-  "id": "20ced522-74a9-4f6c-bbde-e4798377f9f9",
+  "id": "0a6cc02c-9c47-4186-9206-dc357ba37e1e",
   "prevId": "32847a9c-cc78-4554-b5a4-ce08a4bc7842",
   "version": "6",
   "dialect": "postgresql",
@@ -119,6 +119,13 @@
       },
       "compositePrimaryKeys": {},
       "uniqueConstraints": {
+        "users_email_unique": {
+          "name": "users_email_unique",
+          "nullsNotDistinct": false,
+          "columns": [
+            "email"
+          ]
+        },
         "users_address_id_unique": {
           "name": "users_address_id_unique",
           "nullsNotDistinct": false,

@@ -11,6 +11,7 @@ CREATE TABLE IF NOT EXISTS "users" (
 	"name" text,
 	"password" text,
 	"address_id" integer,
+	CONSTRAINT "users_email_unique" UNIQUE("email"),
 	CONSTRAINT "users_address_id_unique" UNIQUE("address_id")
 );
 --> statement-breakpoint

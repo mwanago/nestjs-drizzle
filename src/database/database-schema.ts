@@ -15,7 +15,7 @@ export const addresses = pgTable('addresses', {
 
 export const users = pgTable('users', {
   id: serial('id').primaryKey(),
-  email: text('email'),
+  email: text('email').unique(),
   name: text('name'),
   password: text('password'),
   addressId: integer('address_id')
