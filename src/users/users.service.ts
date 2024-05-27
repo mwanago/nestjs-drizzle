@@ -4,8 +4,8 @@ import { DrizzleService } from '../database/drizzle.service';
 import { databaseSchema } from '../database/database-schema';
 import { eq } from 'drizzle-orm';
 import { isRecord } from '../utilities/isRecord';
-import { PostgresErrorCode } from '../database/postgresErrorCode.enum';
-import UserAlreadyExistsException from './userAlreadyExists.exception';
+import { PostgresErrorCode } from '../database/postgres-error-code.enum';
+import { UserAlreadyExistsException } from './user-already-exists.exception';
 
 @Injectable()
 export class UsersService {
