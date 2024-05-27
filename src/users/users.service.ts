@@ -12,10 +12,12 @@ export class UsersService {
   constructor(private readonly drizzleService: DrizzleService) {}
 
   async getByEmail(email: string) {
-    const users = await this.drizzleService.db
-      .select()
-      .from(databaseSchema.users)
-      .where(eq(databaseSchema.users.email, email));
+    const users = await this.drizzleService.db.query.users.findMany({
+      with: {
+        address: true,
+      },
+      where: eq(databaseSchema.users.email, email),
+    });
 
     const user = users.pop();
 
@@ -27,10 +29,12 @@ export class UsersService {
   }
 
   async getById(id: number) {
-    const users = await this.drizzleService.db
-      .select()
-      .from(databaseSchema.users)
-      .where(eq(databaseSchema.users.id, id));
+    const users = await this.drizzleService.db.query.users.findMany({
+      with: {
+        address: true,
+      },
+      where: eq(databaseSchema.users.id, id),
+    });
 
     const user = users.pop();
 
