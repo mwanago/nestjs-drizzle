@@ -12,14 +12,12 @@ export class UsersService {
   constructor(private readonly drizzleService: DrizzleService) {}
 
   async getByEmail(email: string) {
-    const users = await this.drizzleService.db.query.users.findMany({
+    const user = await this.drizzleService.db.query.users.findFirst({
       with: {
         address: true,
       },
       where: eq(databaseSchema.users.email, email),
     });
-
-    const user = users.pop();
 
     if (!user) {
       throw new NotFoundException();
@@ -29,14 +27,12 @@ export class UsersService {
   }
 
   async getById(id: number) {
-    const users = await this.drizzleService.db.query.users.findMany({
+    const user = await this.drizzleService.db.query.users.findFirst({
       with: {
         address: true,
       },
       where: eq(databaseSchema.users.id, id),
     });
-
-    const user = users.pop();
 
     if (!user) {
       throw new NotFoundException();
