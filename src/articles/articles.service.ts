@@ -25,10 +25,14 @@ export class ArticlesService {
     return article;
   }
 
-  async create(article: CreateArticleDto) {
+  async create(article: CreateArticleDto, authorId: number) {
     const createdArticles = await this.drizzleService.db
       .insert(databaseSchema.articles)
-      .values(article)
+      .values({
+        authorId,
+        title: article.title,
+        content: article.content,
+      })
       .returning();
 
     return createdArticles.pop();

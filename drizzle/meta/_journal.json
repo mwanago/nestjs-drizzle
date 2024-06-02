@@ -15,6 +15,13 @@
       "when": 1716758458482,
       "tag": "0001_create-users-and-addresses-tables",
       "breakpoints": true
+    },
+    {
+      "idx": 2,
+      "version": "6",
+      "when": 1717365162363,
+      "tag": "0002_add-author-id",
+      "breakpoints": true
     }
   ]
 }

@@ -7,12 +7,14 @@ import {
   ParseIntPipe,
   Patch,
   Post,
+  Req,
   UseGuards,
 } from '@nestjs/common';
 import { ArticlesService } from './articles.service';
 import { CreateArticleDto } from './dto/create-article.dto';
 import { UpdateArticleDto } from './dto/update-article.dto';
 import { JwtAuthenticationGuard } from '../authentication/jwt-authentication.guard';
+import { RequestWithUser } from '../authentication/request-with-user.interface';
 
 @Controller('articles')
 export class ArticlesController {
@@ -30,8 +32,8 @@ export class ArticlesController {
 
   @Post()
   @UseGuards(JwtAuthenticationGuard)
-  create(@Body() article: CreateArticleDto) {
-    return this.articlesService.create(article);
+  create(@Body() article: CreateArticleDto, @Req() request: RequestWithUser) {
+    return this.articlesService.create(article, request.user.id);
   }
 
   @Patch(':id')

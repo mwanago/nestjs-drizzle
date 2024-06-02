@@ -1,6 +1,6 @@
 {
-  "id": "0a6cc02c-9c47-4186-9206-dc357ba37e1e",
-  "prevId": "32847a9c-cc78-4554-b5a4-ce08a4bc7842",
+  "id": "184fd83b-7f25-4d85-b61d-62594370d0ce",
+  "prevId": "0a6cc02c-9c47-4186-9206-dc357ba37e1e",
   "version": "6",
   "dialect": "postgresql",
   "tables": {
@@ -59,10 +59,30 @@
           "type": "text",
           "primaryKey": false,
           "notNull": false
+        },
+        "author_id": {
+          "name": "author_id",
+          "type": "integer",
+          "primaryKey": false,
+          "notNull": false
         }
       },
       "indexes": {},
-      "foreignKeys": {},
+      "foreignKeys": {
+        "articles_author_id_users_id_fk": {
+          "name": "articles_author_id_users_id_fk",
+          "tableFrom": "articles",
+          "tableTo": "users",
+          "columnsFrom": [
+            "author_id"
+          ],
+          "columnsTo": [
+            "id"
+          ],
+          "onDelete": "no action",
+          "onUpdate": "no action"
+        }
+      },
       "compositePrimaryKeys": {},
       "uniqueConstraints": {}
     },
