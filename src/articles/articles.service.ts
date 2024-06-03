@@ -28,7 +28,11 @@ export class ArticlesService {
   async getWithAuthor(articleId: number) {
     const article = await this.drizzleService.db.query.articles.findFirst({
       with: {
-        author: true,
+        author: {
+          with: {
+            address: true,
+          },
+        },
       },
       where: eq(databaseSchema.articles.id, articleId),
     });
