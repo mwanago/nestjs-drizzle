@@ -27,7 +27,7 @@ export class ArticlesController {
 
   @Get(':id')
   getById(@Param('id', ParseIntPipe) id: number) {
-    return this.articlesService.getById(id);
+    return this.articlesService.getWithAuthor(id);
   }
 
   @Post()
