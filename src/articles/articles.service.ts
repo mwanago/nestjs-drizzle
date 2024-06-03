@@ -26,25 +26,18 @@ export class ArticlesService {
   }
 
   async getWithAuthor(articleId: number) {
-    const allResults = await this.drizzleService.db
-      .select()
-      .from(databaseSchema.articles)
-      .where(eq(databaseSchema.articles.id, articleId))
-      .innerJoin(
-        databaseSchema.users,
-        eq(databaseSchema.articles.authorId, databaseSchema.users.id),
-      );
+    const article = await this.drizzleService.db.query.articles.findFirst({
+      with: {
+        author: true,
+      },
+      where: eq(databaseSchema.articles.id, articleId),
+    });
 
-    const result = allResults.pop();
-
-    if (!result) {
+    if (!article) {
       throw new NotFoundException();
     }
 
-    return {
-      ...result.articles,
-      author: result.users,
-    };
+    return article;
   }
 
   async create(article: CreateArticleDto, authorId: number) {

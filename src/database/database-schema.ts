@@ -32,9 +32,17 @@ export const usersAddressesRelation = relations(users, ({ one }) => ({
   }),
 }));
 
+export const articlesAuthorsRelation = relations(articles, ({ one }) => ({
+  author: one(users, {
+    fields: [articles.authorId],
+    references: [users.id],
+  }),
+}));
+
 export const databaseSchema = {
   articles,
   addresses,
   users,
   usersAddressesRelation,
+  articlesAuthorsRelation,
 };
