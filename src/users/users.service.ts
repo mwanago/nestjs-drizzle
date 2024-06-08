@@ -92,4 +92,15 @@ export class UsersService {
       }
     });
   }
+
+  async delete(userId: number) {
+    const deletedUsers = await this.drizzleService.db
+      .delete(databaseSchema.users)
+      .where(eq(databaseSchema.users.id, userId))
+      .returning();
+
+    if (deletedUsers.length === 0) {
+      throw new NotFoundException();
+    }
+  }
 }

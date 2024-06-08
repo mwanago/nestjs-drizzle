@@ -6,6 +6,7 @@ import {
   Post,
   Req,
   Res,
+  Delete,
   UseGuards,
 } from '@nestjs/common';
 import { AuthenticationService } from './authentication.service';
@@ -14,10 +15,14 @@ import { LogInDto } from './dto/log-in.dto';
 import { Response } from 'express';
 import { JwtAuthenticationGuard } from './jwt-authentication.guard';
 import { RequestWithUser } from './request-with-user.interface';
+import { UsersService } from '../users/users.service';
 
 @Controller('authentication')
 export class AuthenticationController {
-  constructor(private readonly authenticationService: AuthenticationService) {}
+  constructor(
+    private readonly authenticationService: AuthenticationService,
+    private readonly usersService: UsersService,
+  ) {}
 
   @Post('sign-up')
   signUp(@Body() signUpData: SignUpDto) {
@@ -48,5 +53,11 @@ export class AuthenticationController {
   @Get()
   authenticate(@Req() request: RequestWithUser) {
     return request.user;
+  }
+
+  @UseGuards(JwtAuthenticationGuard)
+  @Delete()
+  async deleteAccount(@Req() request: RequestWithUser) {
+    await this.usersService.delete(request.user.id);
   }
 }
