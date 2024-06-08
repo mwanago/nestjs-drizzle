@@ -3,16 +3,16 @@ import { relations } from 'drizzle-orm';
 
 export const addresses = pgTable('addresses', {
   id: serial('id').primaryKey(),
-  street: text('street'),
-  city: text('city'),
-  country: text('country'),
+  street: text('street').notNull(),
+  city: text('city').notNull(),
+  country: text('country').notNull(),
 });
 
 export const users = pgTable('users', {
   id: serial('id').primaryKey(),
-  email: text('email').unique(),
-  name: text('name'),
-  password: text('password'),
+  email: text('email').unique().notNull(),
+  name: text('name').notNull(),
+  password: text('password').notNull(),
   addressId: integer('address_id')
     .unique()
     .references(() => addresses.id),
@@ -20,9 +20,11 @@ export const users = pgTable('users', {
 
 export const articles = pgTable('articles', {
   id: serial('id').primaryKey(),
-  title: text('title'),
-  content: text('content'),
-  authorId: integer('author_id').references(() => users.id),
+  title: text('title').notNull(),
+  content: text('content').notNull(),
+  authorId: integer('author_id')
+    .references(() => users.id)
+    .notNull(),
 });
 
 export const usersAddressesRelation = relations(users, ({ one }) => ({
