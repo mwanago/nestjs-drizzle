@@ -1,15 +1,15 @@
 CREATE TABLE IF NOT EXISTS "addresses" (
 	"id" serial PRIMARY KEY NOT NULL,
-	"street" text,
-	"city" text,
-	"country" text
+	"street" text NOT NULL,
+	"city" text NOT NULL,
+	"country" text NOT NULL
 );
 --> statement-breakpoint
 CREATE TABLE IF NOT EXISTS "users" (
 	"id" serial PRIMARY KEY NOT NULL,
-	"email" text,
-	"name" text,
-	"password" text,
+	"email" text NOT NULL,
+	"name" text NOT NULL,
+	"password" text NOT NULL,
 	"address_id" integer,
 	CONSTRAINT "users_email_unique" UNIQUE("email"),
 	CONSTRAINT "users_address_id_unique" UNIQUE("address_id")

@@ -5,21 +5,21 @@
     {
       "idx": 0,
       "version": "6",
-      "when": 1715913771482,
+      "when": 1717837723606,
       "tag": "0000_create-articles-table",
       "breakpoints": true
     },
     {
       "idx": 1,
       "version": "6",
-      "when": 1716758458482,
+      "when": 1717837828824,
       "tag": "0001_create-users-and-addresses-tables",
       "breakpoints": true
     },
     {
       "idx": 2,
       "version": "6",
-      "when": 1717365162363,
+      "when": 1717837869539,
       "tag": "0002_add-author-id",
       "breakpoints": true
     }
