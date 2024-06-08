@@ -1,7 +1,7 @@
 import {
   BadRequestException,
   Injectable,
-  NotFoundException
+  NotFoundException,
 } from '@nestjs/common';
 import { DrizzleService } from '../database/drizzle.service';
 import { databaseSchema } from '../database/database-schema';
@@ -63,8 +63,13 @@ export class ArticlesService {
 
       return createdArticles.pop();
     } catch (error) {
-      if (isDatabaseError(error) && error.code === PostgresErrorCode.NotNullViolation) {
-        throw new BadRequestException(`The value of ${error.column} can not be null`);
+      if (
+        isDatabaseError(error) &&
+        error.code === PostgresErrorCode.NotNullViolation
+      ) {
+        throw new BadRequestException(
+          `The value of ${error.column} can not be null`,
+        );
       }
       throw error;
     }
