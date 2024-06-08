@@ -3,7 +3,7 @@ import { UserDto } from './user.dto';
 import { DrizzleService } from '../database/drizzle.service';
 import { databaseSchema } from '../database/database-schema';
 import { eq } from 'drizzle-orm';
-import { isRecord } from '../utilities/isRecord';
+import { isRecord } from '../utilities/is-record';
 import { PostgresErrorCode } from '../database/postgres-error-code.enum';
 import { UserAlreadyExistsException } from './user-already-exists.exception';
 

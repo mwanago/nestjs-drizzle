@@ -1,9 +1,15 @@
-import { Injectable, NotFoundException } from '@nestjs/common';
+import {
+  BadRequestException,
+  Injectable,
+  NotFoundException
+} from '@nestjs/common';
 import { DrizzleService } from '../database/drizzle.service';
 import { databaseSchema } from '../database/database-schema';
 import { eq } from 'drizzle-orm';
 import { CreateArticleDto } from './dto/create-article.dto';
 import { UpdateArticleDto } from './dto/update-article.dto';
+import { isDatabaseError } from '../database/databse-error';
+import { PostgresErrorCode } from '../database/postgres-error-code.enum';
 
 @Injectable()
 export class ArticlesService {
@@ -45,16 +51,23 @@ export class ArticlesService {
   }
 
   async create(article: CreateArticleDto, authorId: number) {
-    const createdArticles = await this.drizzleService.db
-      .insert(databaseSchema.articles)
-      .values({
-        authorId,
-        title: article.title,
-        content: article.content,
-      })
-      .returning();
+    try {
+      const createdArticles = await this.drizzleService.db
+        .insert(databaseSchema.articles)
+        .values({
+          authorId,
+          title: article.title,
+          content: article.content,
+        })
+        .returning();
 
-    return createdArticles.pop();
+      return createdArticles.pop();
+    } catch (error) {
+      if (isDatabaseError(error) && error.code === PostgresErrorCode.NotNullViolation) {
+        throw new BadRequestException(`The value of ${error.column} can not be null`);
+      }
+      throw error;
+    }
   }
 
   async update(id: number, article: UpdateArticleDto) {
