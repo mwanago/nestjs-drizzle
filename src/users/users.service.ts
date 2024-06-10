@@ -1,4 +1,8 @@
-import { Injectable, NotFoundException } from '@nestjs/common';
+import {
+  BadRequestException,
+  Injectable,
+  NotFoundException,
+} from '@nestjs/common';
 import { UserDto } from './user.dto';
 import { DrizzleService } from '../database/drizzle.service';
 import { databaseSchema } from '../database/database-schema';
@@ -98,13 +102,24 @@ export class UsersService {
   }
 
   async delete(userId: number) {
-    const deletedUsers = await this.drizzleService.db
-      .delete(databaseSchema.users)
-      .where(eq(databaseSchema.users.id, userId))
-      .returning();
-
-    if (deletedUsers.length === 0) {
-      throw new NotFoundException();
+    try {
+      const deletedUsers = await this.drizzleService.db
+        .delete(databaseSchema.users)
+        .where(eq(databaseSchema.users.id, userId))
+        .returning();
+      if (deletedUsers.length === 0) {
+        throw new NotFoundException();
+      }
+    } catch (error) {
+      if (
+        isDatabaseError(error) &&
+        error.code === PostgresErrorCode.ForeignKeyViolation
+      ) {
+        throw new BadRequestException(
+          'Can not remove a user that is an author of an article',
+        );
+      }
+      throw error;
     }
   }
 }
