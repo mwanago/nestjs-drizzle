@@ -63,13 +63,16 @@ export class ArticlesService {
 
       return createdArticles.pop();
     } catch (error) {
-      if (
-        isDatabaseError(error) &&
-        error.code === PostgresErrorCode.NotNullViolation
-      ) {
+      if (!isDatabaseError(error)) {
+        throw error;
+      }
+      if (error.code === PostgresErrorCode.NotNullViolation) {
         throw new BadRequestException(
           `The value of ${error.column} can not be null`,
         );
+      }
+      if (error.code === PostgresErrorCode.CheckViolation) {
+        throw new BadRequestException('The title can not be an empty string');
       }
       throw error;
     }
