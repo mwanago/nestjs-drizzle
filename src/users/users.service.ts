@@ -55,7 +55,10 @@ export class UsersService {
 
       return createdUsers.pop();
     } catch (error) {
-      if (isRecord(error) && error.code === PostgresErrorCode.UniqueViolation) {
+      if (
+        isDatabaseError(error) &&
+        error.code === PostgresErrorCode.UniqueViolation
+      ) {
         throw new UserAlreadyExistsException(user.email);
       }
       throw error;
