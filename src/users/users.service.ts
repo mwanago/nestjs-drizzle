@@ -6,6 +6,7 @@ import { eq } from 'drizzle-orm';
 import { isRecord } from '../utilities/is-record';
 import { PostgresErrorCode } from '../database/postgres-error-code.enum';
 import { UserAlreadyExistsException } from './user-already-exists.exception';
+import { isDatabaseError } from '../database/databse-error';
 
 @Injectable()
 export class UsersService {
@@ -83,7 +84,7 @@ export class UsersService {
         return createdUsers.pop();
       } catch (error) {
         if (
-          isRecord(error) &&
+          isDatabaseError(error) &&
           error.code === PostgresErrorCode.UniqueViolation
         ) {
           throw new UserAlreadyExistsException(user.email);
