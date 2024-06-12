@@ -10,6 +10,7 @@ import { eq } from 'drizzle-orm';
 import { PostgresErrorCode } from '../database/postgres-error-code.enum';
 import { UserAlreadyExistsException } from './user-already-exists.exception';
 import { isDatabaseError } from '../database/databse-error';
+import { PostgresTransaction } from '../database/postgres-transaction';
 
 @Injectable()
 export class UsersService {
@@ -100,9 +101,11 @@ export class UsersService {
     });
   }
 
-  async delete(userId: number) {
+  async delete(userId: number, transaction?: PostgresTransaction) {
+    const database = transaction ?? this.drizzleService.db;
+
     try {
-      const deletedUsers = await this.drizzleService.db
+      const deletedUsers = await database
         .delete(databaseSchema.users)
         .where(eq(databaseSchema.users.id, userId))
         .returning();
@@ -128,14 +131,7 @@ export class UsersService {
         .delete(databaseSchema.articles)
         .where(eq(databaseSchema.articles.authorId, userId));
 
-      const deletedUsers = await transaction
-        .delete(databaseSchema.users)
-        .where(eq(databaseSchema.users.id, userId))
-        .returning();
-
-      if (deletedUsers.length === 0) {
-        throw new NotFoundException();
-      }
+      await this.delete(userId, transaction);
     });
   }
 }
