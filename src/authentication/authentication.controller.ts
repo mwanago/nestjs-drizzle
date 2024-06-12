@@ -58,6 +58,6 @@ export class AuthenticationController {
   @UseGuards(JwtAuthenticationGuard)
   @Delete()
   async deleteAccount(@Req() request: RequestWithUser) {
-    await this.usersService.delete(request.user.id);
+    await this.usersService.deleteWithArticles(request.user.id);
   }
 }

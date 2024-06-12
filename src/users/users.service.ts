@@ -7,7 +7,6 @@ import { UserDto } from './user.dto';
 import { DrizzleService } from '../database/drizzle.service';
 import { databaseSchema } from '../database/database-schema';
 import { eq } from 'drizzle-orm';
-import { isRecord } from '../utilities/is-record';
 import { PostgresErrorCode } from '../database/postgres-error-code.enum';
 import { UserAlreadyExistsException } from './user-already-exists.exception';
 import { isDatabaseError } from '../database/databse-error';
@@ -121,5 +120,22 @@ export class UsersService {
       }
       throw error;
     }
+  }
+
+  deleteWithArticles(userId: number) {
+    return this.drizzleService.db.transaction(async (transaction) => {
+      await transaction
+        .delete(databaseSchema.articles)
+        .where(eq(databaseSchema.articles.authorId, userId));
+
+      const deletedUsers = await transaction
+        .delete(databaseSchema.users)
+        .where(eq(databaseSchema.users.id, userId))
+        .returning();
+
+      if (deletedUsers.length === 0) {
+        throw new NotFoundException();
+      }
+    });
   }
 }
