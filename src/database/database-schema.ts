@@ -1,4 +1,10 @@
-import { serial, text, integer, pgTable } from 'drizzle-orm/pg-core';
+import {
+  serial,
+  text,
+  integer,
+  pgTable,
+  primaryKey,
+} from 'drizzle-orm/pg-core';
 import { relations } from 'drizzle-orm';
 
 export const addresses = pgTable('addresses', {
@@ -27,6 +33,26 @@ export const articles = pgTable('articles', {
     .notNull(),
 });
 
+export const categories = pgTable('categories', {
+  id: serial('id').primaryKey(),
+  name: text('title').notNull(),
+});
+
+export const categoriesArticles = pgTable(
+  'categories_articles',
+  {
+    categoryId: integer('category_id')
+      .notNull()
+      .references(() => categories.id),
+    articleId: integer('article_id')
+      .notNull()
+      .references(() => articles.id),
+  },
+  (columns) => ({
+    pk: primaryKey({ columns: [columns.categoryId, columns.articleId] }),
+  }),
+);
+
 export const usersAddressesRelation = relations(users, ({ one }) => ({
   address: one(addresses, {
     fields: [users.addressId],
@@ -47,4 +73,6 @@ export const databaseSchema = {
   users,
   usersAddressesRelation,
   articlesAuthorsRelation,
+  categories,
+  categoriesArticles,
 };
