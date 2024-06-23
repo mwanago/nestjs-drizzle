@@ -51,6 +51,9 @@ export class ArticlesService {
   }
 
   async create(article: CreateArticleDto, authorId: number) {
+    if (article.categoryIds?.length) {
+      return this.createWithCategories(article, authorId);
+    }
     try {
       const createdArticles = await this.drizzleService.db
         .insert(databaseSchema.articles)
@@ -76,6 +79,33 @@ export class ArticlesService {
       }
       throw error;
     }
+  }
+
+  async createWithCategories(article: CreateArticleDto, authorId: number) {
+    return this.drizzleService.db.transaction(async (transaction) => {
+      const createdArticles = await transaction
+        .insert(databaseSchema.articles)
+        .values({
+          authorId,
+          title: article.title,
+          content: article.content,
+        })
+        .returning();
+
+      const createdArticle = createdArticles.pop();
+
+      await transaction.insert(databaseSchema.categoriesArticles).values(
+        article.categoryIds.map((categoryId) => ({
+          categoryId,
+          articleId: createdArticle.id,
+        })),
+      );
+
+      return {
+        ...createdArticle,
+        categoryIds: article.categoryIds,
+      };
+    });
   }
 
   async update(id: number, article: UpdateArticleDto) {
