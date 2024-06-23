@@ -29,6 +29,13 @@
       "when": 1717996515195,
       "tag": "0003_add-articles-title-check",
       "breakpoints": true
+    },
+    {
+      "idx": 4,
+      "version": "6",
+      "when": 1719129380047,
+      "tag": "0004_add-categories-table",
+      "breakpoints": true
     }
   ]
 }
