@@ -4,11 +4,13 @@ import * as Joi from 'joi';
 import { ArticlesModule } from './articles/articles.module';
 import { DatabaseModule } from './database/database.module';
 import { AuthenticationModule } from './authentication/authentication.module';
+import { CategoriesModule } from './categories/categories.module';
 
 @Module({
   imports: [
     ArticlesModule,
     AuthenticationModule,
+    CategoriesModule,
     DatabaseModule.forRootAsync({
       imports: [ConfigModule],
       inject: [ConfigService],
