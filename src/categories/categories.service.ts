@@ -12,16 +12,29 @@ export class CategoriesService {
     return this.drizzleService.db.select().from(databaseSchema.categories);
   }
 
-  async getById(id: number) {
-    const categories = await this.drizzleService.db
-      .select()
-      .from(databaseSchema.categories)
-      .where(eq(databaseSchema.categories.id, id));
-    const category = categories.pop();
+  async getById(categoryId: number) {
+    const category = await this.drizzleService.db.query.categories.findFirst({
+      with: {
+        categoriesArticles: {
+          with: {
+            article: true,
+          },
+        },
+      },
+      where: eq(databaseSchema.categories.id, categoryId),
+    });
+
     if (!category) {
       throw new NotFoundException();
     }
-    return category;
+
+    const articles = category.categoriesArticles.map(({ article }) => article);
+
+    return {
+      id: category.id,
+      name: category.name,
+      articles,
+    };
   }
 
   async create(data: CategoryDto) {
