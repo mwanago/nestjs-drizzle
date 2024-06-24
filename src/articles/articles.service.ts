@@ -19,24 +19,17 @@ export class ArticlesService {
     return this.drizzleService.db.select().from(databaseSchema.articles);
   }
 
-  async getById(id: number) {
-    const articles = await this.drizzleService.db
-      .select()
-      .from(databaseSchema.articles)
-      .where(eq(databaseSchema.articles.id, id));
-    const article = articles.pop();
-    if (!article) {
-      throw new NotFoundException();
-    }
-    return article;
-  }
-
-  async getWithAuthor(articleId: number) {
+  async getById(articleId: number) {
     const article = await this.drizzleService.db.query.articles.findFirst({
       with: {
         author: {
           with: {
             address: true,
+          },
+        },
+        categoriesArticles: {
+          with: {
+            category: true,
           },
         },
       },
@@ -47,7 +40,17 @@ export class ArticlesService {
       throw new NotFoundException();
     }
 
-    return article;
+    const categories = article.categoriesArticles.map(
+      ({ category }) => category,
+    );
+
+    return {
+      id: article.id,
+      author: article.author,
+      title: article.title,
+      content: article.content,
+      categories,
+    };
   }
 
   async create(article: CreateArticleDto, authorId: number) {

@@ -60,19 +60,40 @@ export const usersAddressesRelation = relations(users, ({ one }) => ({
   }),
 }));
 
-export const articlesAuthorsRelation = relations(articles, ({ one }) => ({
+export const articlesRelations = relations(articles, ({ one, many }) => ({
   author: one(users, {
     fields: [articles.authorId],
     references: [users.id],
   }),
+  categoriesArticles: many(categoriesArticles),
 }));
+
+export const categoriesRelations = relations(categories, ({ many }) => ({
+  categoriesArticles: many(categoriesArticles),
+}));
+
+export const categoriesArticlesRelations = relations(
+  categoriesArticles,
+  ({ one }) => ({
+    category: one(categories, {
+      fields: [categoriesArticles.categoryId],
+      references: [categories.id],
+    }),
+    article: one(articles, {
+      fields: [categoriesArticles.articleId],
+      references: [articles.id],
+    }),
+  }),
+);
 
 export const databaseSchema = {
   articles,
   addresses,
   users,
   usersAddressesRelation,
-  articlesAuthorsRelation,
+  articlesRelations,
   categories,
   categoriesArticles,
+  categoriesArticlesRelations,
+  categoriesRelations,
 };
