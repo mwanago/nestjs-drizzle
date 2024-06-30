@@ -1,8 +1,9 @@
 import { defineConfig } from 'drizzle-kit';
 import { ConfigService } from '@nestjs/config';
 import 'dotenv/config';
+import { EnvironmentVariables } from './src/utilities/environment-variables';
 
-const configService = new ConfigService();
+const configService = new ConfigService<EnvironmentVariables, true>();
 
 export default defineConfig({
   schema: './src/database/database-schema.ts',

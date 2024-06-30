@@ -3,7 +3,7 @@ import {
   Injectable,
   NotFoundException,
 } from '@nestjs/common';
-import { UserDto } from './user.dto';
+import { AddressDto, UserDto } from './user.dto';
 import { DrizzleService } from '../database/drizzle.service';
 import { databaseSchema } from '../database/database-schema';
 import { eq } from 'drizzle-orm';
@@ -48,7 +48,7 @@ export class UsersService {
 
   async create(user: UserDto) {
     if (user.address) {
-      return this.createWithAddress(user);
+      return this.createWithAddress(user, user.address);
     }
 
     try {
@@ -69,14 +69,14 @@ export class UsersService {
     }
   }
 
-  async createWithAddress(user: UserDto) {
+  async createWithAddress(user: UserDto, address: AddressDto) {
     return this.drizzleService.db.transaction(async (transaction) => {
       const createdAddresses = await transaction
         .insert(databaseSchema.addresses)
-        .values(user.address)
+        .values(address)
         .returning();
 
-      const createdAddress = createdAddresses.pop();
+      const createdAddress = createdAddresses[0];
 
       try {
         const createdUsers = await transaction

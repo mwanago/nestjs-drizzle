@@ -5,6 +5,7 @@ import { ArticlesModule } from './articles/articles.module';
 import { DatabaseModule } from './database/database.module';
 import { AuthenticationModule } from './authentication/authentication.module';
 import { CategoriesModule } from './categories/categories.module';
+import { EnvironmentVariables } from './utilities/environment-variables';
 
 @Module({
   imports: [
@@ -14,7 +15,9 @@ import { CategoriesModule } from './categories/categories.module';
     DatabaseModule.forRootAsync({
       imports: [ConfigModule],
       inject: [ConfigService],
-      useFactory: (configService: ConfigService) => ({
+      useFactory: (
+        configService: ConfigService<EnvironmentVariables, true>,
+      ) => ({
         host: configService.get('POSTGRES_HOST'),
         port: configService.get('POSTGRES_PORT'),
         user: configService.get('POSTGRES_USER'),

@@ -3,8 +3,7 @@ import { IsString, IsNotEmpty, IsOptional, IsNumber } from 'class-validator';
 export class CreateArticleDto {
   @IsString()
   @IsNotEmpty()
-  @IsOptional()
-  content?: string;
+  content: string;
 
   @IsString()
   @IsNotEmpty()
@@ -12,5 +11,5 @@ export class CreateArticleDto {
 
   @IsOptional()
   @IsNumber({}, { each: true })
-  categoryIds?: number[];
+  categoryIds: number[] = [];
 }

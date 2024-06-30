@@ -95,7 +95,7 @@ export class ArticlesService {
         })
         .returning();
 
-      const createdArticle = createdArticles.pop();
+      const createdArticle = createdArticles[0];
 
       await transaction.insert(databaseSchema.categoriesArticles).values(
         article.categoryIds.map((categoryId) => ({
