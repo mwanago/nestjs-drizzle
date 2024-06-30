@@ -85,7 +85,7 @@ export class UsersService {
             name: user.name,
             email: user.email,
             password: user.password,
-            addressId: createdAddress.id,
+            addressId: createdAddress?.id,
           })
           .returning();
         return createdUsers.pop();
