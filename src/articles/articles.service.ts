@@ -5,7 +5,7 @@ import {
 } from '@nestjs/common';
 import { DrizzleService } from '../database/drizzle.service';
 import { databaseSchema } from '../database/database-schema';
-import { asc, count, eq } from 'drizzle-orm';
+import { asc, count, eq, gt } from 'drizzle-orm';
 import { CreateArticleDto } from './dto/create-article.dto';
 import { UpdateArticleDto } from './dto/update-article.dto';
 import { isDatabaseError } from '../database/databse-error';
@@ -16,7 +16,7 @@ import { PaginationParamsDto } from '../utilities/pagination-params.dto';
 export class ArticlesService {
   constructor(private readonly drizzleService: DrizzleService) {}
 
-  getAll({ offset, limit }: PaginationParamsDto) {
+  getAll({ offset, limit, idsToSkip }: PaginationParamsDto) {
     return this.drizzleService.db.transaction(async (transaction) => {
       const articlesCountResponses = await transaction
         .select({ articlesCount: count() })
@@ -28,7 +28,8 @@ export class ArticlesService {
         .select()
         .from(databaseSchema.articles)
         .orderBy(asc(databaseSchema.articles.id))
-        .offset(offset);
+        .offset(offset)
+        .where(gt(databaseSchema.articles.id, idsToSkip));
 
       if (limit) {
         const data = await dataQuery.limit(limit);
