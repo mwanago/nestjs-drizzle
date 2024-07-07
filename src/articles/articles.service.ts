@@ -77,7 +77,7 @@ export class ArticlesService {
       id: article.id,
       author: article.author,
       title: article.title,
-      content: article.content,
+      paragraphs: article.paragraphs,
       categories,
     };
   }
@@ -92,7 +92,7 @@ export class ArticlesService {
         .values({
           authorId,
           title: article.title,
-          content: article.content,
+          paragraphs: article.paragraphs,
         })
         .returning();
 
@@ -120,7 +120,7 @@ export class ArticlesService {
         .values({
           authorId,
           title: article.title,
-          content: article.content,
+          paragraphs: article.paragraphs,
         })
         .returning();
 
