@@ -6,12 +6,14 @@ import { DatabaseModule } from './database/database.module';
 import { AuthenticationModule } from './authentication/authentication.module';
 import { CategoriesModule } from './categories/categories.module';
 import { EnvironmentVariables } from './utilities/environment-variables';
+import { ProductsModule } from './products/products.module';
 
 @Module({
   imports: [
     ArticlesModule,
     AuthenticationModule,
     CategoriesModule,
+    ProductsModule,
     DatabaseModule.forRootAsync({
       imports: [ConfigModule],
       inject: [ConfigService],
