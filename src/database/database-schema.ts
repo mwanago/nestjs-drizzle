@@ -4,6 +4,7 @@ import {
   integer,
   pgTable,
   primaryKey,
+  json,
 } from 'drizzle-orm/pg-core';
 import { relations } from 'drizzle-orm';
 
@@ -22,6 +23,12 @@ export const users = pgTable('users', {
   addressId: integer('address_id')
     .unique()
     .references(() => addresses.id),
+});
+
+export const products = pgTable('products', {
+  id: serial('id').primaryKey(),
+  name: text('name').notNull(),
+  properties: json('properties').notNull(),
 });
 
 export const articles = pgTable('articles', {
@@ -96,4 +103,5 @@ export const databaseSchema = {
   categoriesArticles,
   categoriesArticlesRelations,
   categoriesRelations,
+  products,
 };

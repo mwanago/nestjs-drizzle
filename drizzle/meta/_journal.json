@@ -43,6 +43,13 @@
       "when": 1720386352782,
       "tag": "0005_change-article-content-to-paragraphs",
       "breakpoints": true
+    },
+    {
+      "idx": 6,
+      "version": "6",
+      "when": 1720873583467,
+      "tag": "0006_create-products-table",
+      "breakpoints": true
     }
   ]
 }
