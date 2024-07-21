@@ -5,6 +5,7 @@ import {
   pgTable,
   primaryKey,
   json,
+  timestamp,
 } from 'drizzle-orm/pg-core';
 import { relations } from 'drizzle-orm';
 
@@ -43,6 +44,7 @@ export const articles = pgTable('articles', {
 export const categories = pgTable('categories', {
   id: serial('id').primaryKey(),
   name: text('title').notNull(),
+  deletedAt: timestamp('deleted_at', { withTimezone: true }),
 });
 
 export const categoriesArticles = pgTable(
