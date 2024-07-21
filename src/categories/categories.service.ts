@@ -58,7 +58,12 @@ export class CategoriesService {
     const updatedCategories = await this.drizzleService.db
       .update(databaseSchema.categories)
       .set(data)
-      .where(eq(databaseSchema.categories.id, id))
+      .where(
+        and(
+          eq(databaseSchema.categories.id, id),
+          isNull(databaseSchema.categories.deletedAt),
+        ),
+      )
       .returning();
 
     if (updatedCategories.length === 0) {
