@@ -91,4 +91,20 @@ export class CategoriesService {
       throw new NotFoundException();
     }
   }
+
+  async restore(id: number) {
+    const restoredCategories = await this.drizzleService.db
+      .update(databaseSchema.categories)
+      .set({
+        deletedAt: null,
+      })
+      .where(eq(databaseSchema.categories.id, id))
+      .returning();
+
+    if (restoredCategories.length === 0) {
+      throw new NotFoundException();
+    }
+
+    return restoredCategories.pop();
+  }
 }
