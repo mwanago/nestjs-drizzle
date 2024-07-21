@@ -2,7 +2,7 @@ import { Injectable, NotFoundException } from '@nestjs/common';
 import { CategoryDto } from './dto/category.dto';
 import { DrizzleService } from '../database/drizzle.service';
 import { databaseSchema } from '../database/database-schema';
-import { eq } from 'drizzle-orm';
+import { eq, sql, and, isNull } from 'drizzle-orm';
 
 @Injectable()
 export class CategoriesService {
@@ -64,8 +64,16 @@ export class CategoriesService {
 
   async delete(id: number) {
     const deletedCategories = await this.drizzleService.db
-      .delete(databaseSchema.categories)
-      .where(eq(databaseSchema.categories.id, id))
+      .update(databaseSchema.categories)
+      .set({
+        deletedAt: sql`now()`,
+      })
+      .where(
+        and(
+          eq(databaseSchema.categories.id, id),
+          isNull(databaseSchema.categories.deletedAt),
+        ),
+      )
       .returning();
 
     if (deletedCategories.length === 0) {
