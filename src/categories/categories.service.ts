@@ -9,7 +9,10 @@ export class CategoriesService {
   constructor(private readonly drizzleService: DrizzleService) {}
 
   getAll() {
-    return this.drizzleService.db.select().from(databaseSchema.categories);
+    return this.drizzleService.db
+      .select()
+      .from(databaseSchema.categories)
+      .where(isNull(databaseSchema.categories.deletedAt));
   }
 
   async getById(categoryId: number) {
@@ -21,7 +24,10 @@ export class CategoriesService {
           },
         },
       },
-      where: eq(databaseSchema.categories.id, categoryId),
+      where: and(
+        eq(databaseSchema.categories.id, categoryId),
+        isNull(databaseSchema.categories.deletedAt),
+      ),
     });
 
     if (!category) {
