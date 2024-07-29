@@ -78,6 +78,7 @@ export class ArticlesService {
       author: article.author,
       title: article.title,
       paragraphs: article.paragraphs,
+      scheduledDate: article.scheduledDate,
       categories,
     };
   }
@@ -93,6 +94,7 @@ export class ArticlesService {
           authorId,
           title: article.title,
           paragraphs: article.paragraphs,
+          scheduledDate: article.scheduledDate,
         })
         .returning();
 
@@ -121,6 +123,7 @@ export class ArticlesService {
           authorId,
           title: article.title,
           paragraphs: article.paragraphs,
+          scheduledDate: article.scheduledDate,
         })
         .returning();
 
