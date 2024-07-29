@@ -57,6 +57,13 @@
       "when": 1721594011798,
       "tag": "0007_add-deleted-at-column-to-categories",
       "breakpoints": true
+    },
+    {
+      "idx": 8,
+      "version": "6",
+      "when": 1722221355917,
+      "tag": "0008_add_scheduled_date_to_articles",
+      "breakpoints": true
     }
   ]
 }

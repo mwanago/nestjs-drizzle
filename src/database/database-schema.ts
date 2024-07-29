@@ -39,6 +39,9 @@ export const articles = pgTable('articles', {
   authorId: integer('author_id')
     .references(() => users.id)
     .notNull(),
+  scheduledDate: timestamp('scheduled_date', {
+    withTimezone: true,
+  }),
 });
 
 export const categories = pgTable('categories', {
