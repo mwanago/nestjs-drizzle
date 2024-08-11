@@ -6,9 +6,9 @@ import {
   primaryKey,
   json,
   timestamp,
+  pgMaterializedView,
 } from 'drizzle-orm/pg-core';
 import { relations, sql } from 'drizzle-orm';
-import { pgMaterializedView } from 'drizzle-orm/pg-core/index';
 
 export const addresses = pgTable('addresses', {
   id: serial('id').primaryKey(),

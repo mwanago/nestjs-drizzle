@@ -1,7 +1,5 @@
 {
-  "id": "695abe15-0222-4528-bfef-4d0c103c78fc",
-  "prevId": "180e8679-7843-44e8-a3ab-b115f2e6f2f7",
-  "version": "6",
+  "version": "7",
   "dialect": "postgresql",
   "tables": {
     "public.addresses": {
@@ -78,15 +76,15 @@
         "articles_author_id_users_id_fk": {
           "name": "articles_author_id_users_id_fk",
           "tableFrom": "articles",
-          "tableTo": "users",
           "columnsFrom": [
             "author_id"
           ],
+          "tableTo": "users",
           "columnsTo": [
             "id"
           ],
-          "onDelete": "no action",
-          "onUpdate": "no action"
+          "onUpdate": "no action",
+          "onDelete": "no action"
         }
       },
       "compositePrimaryKeys": {},
@@ -142,28 +140,28 @@
         "categories_articles_category_id_categories_id_fk": {
           "name": "categories_articles_category_id_categories_id_fk",
           "tableFrom": "categories_articles",
-          "tableTo": "categories",
           "columnsFrom": [
             "category_id"
           ],
+          "tableTo": "categories",
           "columnsTo": [
             "id"
           ],
-          "onDelete": "no action",
-          "onUpdate": "no action"
+          "onUpdate": "no action",
+          "onDelete": "no action"
         },
         "categories_articles_article_id_articles_id_fk": {
           "name": "categories_articles_article_id_articles_id_fk",
           "tableFrom": "categories_articles",
-          "tableTo": "articles",
           "columnsFrom": [
             "article_id"
           ],
+          "tableTo": "articles",
           "columnsTo": [
             "id"
           ],
-          "onDelete": "no action",
-          "onUpdate": "no action"
+          "onUpdate": "no action",
+          "onDelete": "no action"
         }
       },
       "compositePrimaryKeys": {
@@ -245,32 +243,32 @@
         "users_address_id_addresses_id_fk": {
           "name": "users_address_id_addresses_id_fk",
           "tableFrom": "users",
-          "tableTo": "addresses",
           "columnsFrom": [
             "address_id"
           ],
+          "tableTo": "addresses",
           "columnsTo": [
             "id"
           ],
-          "onDelete": "no action",
-          "onUpdate": "no action"
+          "onUpdate": "no action",
+          "onDelete": "no action"
         }
       },
       "compositePrimaryKeys": {},
       "uniqueConstraints": {
         "users_email_unique": {
           "name": "users_email_unique",
-          "nullsNotDistinct": false,
           "columns": [
             "email"
-          ]
+          ],
+          "nullsNotDistinct": false
         },
         "users_address_id_unique": {
           "name": "users_address_id_unique",
-          "nullsNotDistinct": false,
           "columns": [
             "address_id"
-          ]
+          ],
+          "nullsNotDistinct": false
         }
       }
     }
@@ -278,8 +276,11 @@
   "enums": {},
   "schemas": {},
   "_meta": {
-    "columns": {},
     "schemas": {},
-    "tables": {}
-  }
+    "tables": {},
+    "columns": {}
+  },
+  "id": "695abe15-0222-4528-bfef-4d0c103c78fc",
+  "prevId": "180e8679-7843-44e8-a3ab-b115f2e6f2f7",
+  "sequences": {}
 }
