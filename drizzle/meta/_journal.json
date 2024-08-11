@@ -64,6 +64,13 @@
       "when": 1722221355917,
       "tag": "0008_add_scheduled_date_to_articles",
       "breakpoints": true
+    },
+    {
+      "idx": 9,
+      "version": "6",
+      "when": 1722789130650,
+      "tag": "0009_create-articles-scheduled-for-today-view",
+      "breakpoints": true
     }
   ]
 }

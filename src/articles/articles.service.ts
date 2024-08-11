@@ -167,4 +167,14 @@ export class ArticlesService {
       throw new NotFoundException();
     }
   }
+
+  async getScheduledForToday() {
+    await this.drizzleService.db.refreshMaterializedView(
+      databaseSchema.articlesScheduledForToday,
+    );
+
+    return this.drizzleService.db
+      .select()
+      .from(databaseSchema.articlesScheduledForToday);
+  }
 }

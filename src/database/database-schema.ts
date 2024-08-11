@@ -7,7 +7,8 @@ import {
   json,
   timestamp,
 } from 'drizzle-orm/pg-core';
-import { relations } from 'drizzle-orm';
+import { relations, sql } from 'drizzle-orm';
+import { pgMaterializedView } from 'drizzle-orm/pg-core/index';
 
 export const addresses = pgTable('addresses', {
   id: serial('id').primaryKey(),
@@ -98,8 +99,18 @@ export const categoriesArticlesRelations = relations(
   }),
 );
 
+export const articlesScheduledForToday = pgMaterializedView(
+  'articles_scheduled_for_today',
+).as((queryBuilder) => {
+  return queryBuilder
+    .select()
+    .from(articles)
+    .where(sql`DATE(${articles.scheduledDate}) = CURRENT_DATE`);
+});
+
 export const databaseSchema = {
   articles,
+  articlesScheduledForToday,
   addresses,
   users,
   usersAddressesRelation,
