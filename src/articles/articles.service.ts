@@ -1,7 +1,7 @@
 import { Injectable, NotFoundException } from '@nestjs/common';
 import { DrizzleService } from '../database/drizzle.service';
 import { databaseSchema } from '../database/database-schema';
-import { eq } from 'drizzle-orm';
+import { eq, sql } from 'drizzle-orm';
 import { CreateArticleDto } from './dto/create-article.dto';
 import { UpdateArticleDto } from './dto/update-article.dto';
 
@@ -11,6 +11,18 @@ export class ArticlesService {
 
   getAll() {
     return this.drizzleService.db.select().from(databaseSchema.articles);
+  }
+
+  searchByQuery(query: string) {
+    return this.drizzleService.db
+      .select()
+      .from(databaseSchema.articles)
+      .where(
+        sql`${databaseSchema.articles.textTsvector} @@ plainto_tsquery(${query})`,
+      )
+      .orderBy(
+        sql`ts_rank(${databaseSchema.articles.textTsvector}, plainto_tsquery(${query})) DESC`,
+      );
   }
 
   async getById(id: number) {

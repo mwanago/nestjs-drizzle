@@ -1,0 +1,70 @@
+{
+  "id": "294634c0-645d-48b4-bc8e-aa2dd7118004",
+  "prevId": "32847a9c-cc78-4554-b5a4-ce08a4bc7842",
+  "version": "7",
+  "dialect": "postgresql",
+  "tables": {
+    "public.articles": {
+      "name": "articles",
+      "schema": "",
+      "columns": {
+        "id": {
+          "name": "id",
+          "type": "serial",
+          "primaryKey": true,
+          "notNull": true
+        },
+        "title": {
+          "name": "title",
+          "type": "text",
+          "primaryKey": false,
+          "notNull": false
+        },
+        "content": {
+          "name": "content",
+          "type": "text",
+          "primaryKey": false,
+          "notNull": false
+        },
+        "text_tsvector": {
+          "name": "text_tsvector",
+          "type": "tsvector",
+          "primaryKey": false,
+          "notNull": false,
+          "generated": {
+            "as": "\n      setweight(to_tsvector('english', \"articles\".\"title\"), 'A') ||\n      setweight(to_tsvector('english', \"articles\".\"content\"), 'B')\n    ",
+            "type": "stored"
+          }
+        }
+      },
+      "indexes": {
+        "text_tsvector_index": {
+          "name": "text_tsvector_index",
+          "columns": [
+            {
+              "expression": "text_tsvector",
+              "isExpression": false,
+              "asc": true,
+              "nulls": "last"
+            }
+          ],
+          "isUnique": false,
+          "concurrently": false,
+          "method": "gin",
+          "with": {}
+        }
+      },
+      "foreignKeys": {},
+      "compositePrimaryKeys": {},
+      "uniqueConstraints": {}
+    }
+  },
+  "enums": {},
+  "schemas": {},
+  "sequences": {},
+  "_meta": {
+    "columns": {},
+    "schemas": {},
+    "tables": {}
+  }
+}

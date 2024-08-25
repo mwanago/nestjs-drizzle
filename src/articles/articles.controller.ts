@@ -7,6 +7,7 @@ import {
   ParseIntPipe,
   Patch,
   Post,
+  Query,
 } from '@nestjs/common';
 import { ArticlesService } from './articles.service';
 import { CreateArticleDto } from './dto/create-article.dto';
@@ -17,7 +18,10 @@ export class ArticlesController {
   constructor(private readonly articlesService: ArticlesService) {}
 
   @Get()
-  getAll() {
+  getAll(@Query('search') searchQuery: string) {
+    if (searchQuery) {
+      return this.articlesService.searchByQuery(searchQuery);
+    }
     return this.articlesService.getAll();
   }
 

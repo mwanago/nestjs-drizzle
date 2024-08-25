@@ -1,7 +1,5 @@
 {
-  "id": "32847a9c-cc78-4554-b5a4-ce08a4bc7842",
-  "prevId": "00000000-0000-0000-0000-000000000000",
-  "version": "6",
+  "version": "7",
   "dialect": "postgresql",
   "tables": {
     "public.articles": {
@@ -36,8 +34,11 @@
   "enums": {},
   "schemas": {},
   "_meta": {
-    "columns": {},
     "schemas": {},
-    "tables": {}
-  }
+    "tables": {},
+    "columns": {}
+  },
+  "id": "32847a9c-cc78-4554-b5a4-ce08a4bc7842",
+  "prevId": "00000000-0000-0000-0000-000000000000",
+  "sequences": {}
 }

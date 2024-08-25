@@ -8,6 +8,13 @@
       "when": 1715913771482,
       "tag": "0000_create-articles-table",
       "breakpoints": true
+    },
+    {
+      "idx": 1,
+      "version": "7",
+      "when": 1724617442767,
+      "tag": "0001_text-tsvector",
+      "breakpoints": true
     }
   ]
 }
