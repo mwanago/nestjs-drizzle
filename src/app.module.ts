@@ -3,6 +3,7 @@ import { ConfigModule, ConfigService } from '@nestjs/config';
 import * as Joi from 'joi';
 import { ArticlesModule } from './articles/articles.module';
 import { DatabaseModule } from './database/database.module';
+import { FoodModule } from './food/food.module';
 
 @Module({
   imports: [
@@ -27,6 +28,7 @@ import { DatabaseModule } from './database/database.module';
         POSTGRES_DB: Joi.string().required(),
       }),
     }),
+    FoodModule,
   ],
 })
 export class AppModule {}
