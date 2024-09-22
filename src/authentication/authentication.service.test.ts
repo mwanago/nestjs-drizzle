@@ -1,34 +1,34 @@
 import { AuthenticationService } from './authentication.service';
 import { JwtModule } from '@nestjs/jwt';
-import { ConfigModule, ConfigService } from '@nestjs/config';
+import { ConfigModule } from '@nestjs/config';
 import { Test } from '@nestjs/testing';
-import { UsersModule } from '../users/users.module';
-import { DatabaseModule } from '../database/database.module';
-import { EnvironmentVariables } from '../utilities/environment-variables';
+import { UsersService } from '../users/users.service';
+import { SignUpDto } from './dto/sign-up.dto';
 
 describe('The AuthenticationService', () => {
+  let signUpData: SignUpDto;
   let authenticationService: AuthenticationService;
   beforeEach(async () => {
+    signUpData = {
+      email: 'john@smith.com',
+      name: 'John',
+      password: 'strongPassword123',
+    };
+
     const module = await Test.createTestingModule({
-      providers: [AuthenticationService],
+      providers: [
+        AuthenticationService,
+        {
+          provide: UsersService,
+          useValue: {
+            create: jest.fn().mockReturnValue(signUpData),
+          },
+        },
+      ],
       imports: [
-        UsersModule,
         ConfigModule.forRoot(),
         JwtModule.register({
           secretOrPrivateKey: 'Secret key',
-        }),
-        DatabaseModule.forRootAsync({
-          imports: [ConfigModule],
-          inject: [ConfigService],
-          useFactory: (
-            configService: ConfigService<EnvironmentVariables, true>,
-          ) => ({
-            host: configService.get('POSTGRES_HOST'),
-            port: configService.get('POSTGRES_PORT'),
-            user: configService.get('POSTGRES_USER'),
-            password: configService.get('POSTGRES_PASSWORD'),
-            database: configService.get('POSTGRES_DB'),
-          }),
         }),
       ],
     }).compile();
@@ -39,6 +39,14 @@ describe('The AuthenticationService', () => {
     it('should return a correct string', () => {
       const result = authenticationService.getCookieForLogOut();
       expect(result).toBe('Authentication=; HttpOnly; Path=/; Max-Age=0');
+    });
+  });
+  describe('when registering a new user', () => {
+    describe('and when the usersService returns the new user', () => {
+      it('should return the new user', async () => {
+        const result = await authenticationService.signUp(signUpData);
+        expect(result).toBe(signUpData);
+      });
     });
   });
 });
