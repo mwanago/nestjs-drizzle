@@ -1,4 +1,4 @@
-import { Injectable, NotFoundException } from '@nestjs/common';
+import { Injectable, NotFoundException, Logger } from '@nestjs/common';
 import { DrizzleService } from '../database/drizzle.service';
 import { databaseSchema } from '../database/database-schema';
 import { eq } from 'drizzle-orm';
@@ -7,6 +7,8 @@ import { UpdateArticleDto } from './dto/update-article.dto';
 
 @Injectable()
 export class ArticlesService {
+  private readonly logger = new Logger(ArticlesService.name);
+
   constructor(private readonly drizzleService: DrizzleService) {}
 
   getAll() {
@@ -20,6 +22,7 @@ export class ArticlesService {
       .where(eq(databaseSchema.articles.id, id));
     const article = articles.pop();
     if (!article) {
+      this.logger.warn('Tried to get an article that does not exist');
       throw new NotFoundException();
     }
     return article;
