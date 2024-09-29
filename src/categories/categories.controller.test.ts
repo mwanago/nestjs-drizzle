@@ -1,14 +1,18 @@
 import * as request from 'supertest';
-import { INestApplication } from '@nestjs/common';
+import { ExecutionContext, INestApplication } from '@nestjs/common';
 import { Test } from '@nestjs/testing';
 import { CategoriesService } from './categories.service';
 import { DrizzleService } from '../database/drizzle.service';
 import { CategoriesController } from './categories.controller';
+import { JwtAuthenticationGuard } from '../authentication/jwt-authentication.guard';
+import { CategoryDto } from './dto/category.dto';
 
 describe('The CategoriesController', () => {
   let app: INestApplication;
   let findFirstMock: jest.Mock;
+  let drizzleInsertReturningMock: jest.Mock;
   beforeEach(async () => {
+    drizzleInsertReturningMock = jest.fn().mockResolvedValue([]);
     findFirstMock = jest.fn();
     const module = await Test.createTestingModule({
       providers: [
@@ -22,13 +26,28 @@ describe('The CategoriesController', () => {
                   findFirst: findFirstMock,
                 },
               },
+              insert: jest.fn().mockReturnThis(),
+              values: jest.fn().mockReturnThis(),
+              returning: drizzleInsertReturningMock,
             },
           },
         },
       ],
       controllers: [CategoriesController],
       imports: [],
-    }).compile();
+    })
+      .overrideGuard(JwtAuthenticationGuard)
+      .useValue({
+        canActivate: (context: ExecutionContext) => {
+          const req = context.switchToHttp().getRequest();
+          req.user = {
+            id: 1,
+            name: 'John Smith',
+          };
+          return true;
+        },
+      })
+      .compile();
 
     app = module.createNestApplication();
     await app.init();
@@ -56,6 +75,31 @@ describe('The CategoriesController', () => {
       });
       it('should respond with the 404 status', () => {
         return request(app.getHttpServer()).get('/categories/2').expect(404);
+      });
+    });
+  });
+  describe('when the POST /categories endpoint is called', () => {
+    describe('and the correct data is provided', () => {
+      let categoryData: CategoryDto;
+      beforeEach(() => {
+        categoryData = {
+          name: 'New category',
+        };
+        drizzleInsertReturningMock.mockResolvedValue([
+          {
+            id: 2,
+            ...categoryData,
+          },
+        ]);
+      });
+      it('should respond with the new category', () => {
+        return request(app.getHttpServer())
+          .post('/categories')
+          .send(categoryData)
+          .expect({
+            id: 2,
+            ...categoryData,
+          });
       });
     });
   });
