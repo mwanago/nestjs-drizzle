@@ -5,6 +5,11 @@ import { Test } from '@nestjs/testing';
 import { UsersService } from '../users/users.service';
 import { SignUpDto } from './dto/sign-up.dto';
 import { DrizzleService } from '../database/drizzle.service';
+import { InferSelectModel } from 'drizzle-orm';
+import { databaseSchema } from '../database/database-schema';
+import { DatabaseError } from '../database/databse-error';
+import { PostgresErrorCode } from '../database/postgres-error-code.enum';
+import { UserAlreadyExistsException } from '../users/user-already-exists.exception';
 
 jest.mock('bcrypt', () => ({
   hash: () => {
@@ -58,6 +63,38 @@ describe('The AuthenticationService', () => {
         ...signUpData,
         password: 'hashed-password',
       });
+    });
+  });
+  describe('when the DrizzleService returns a valid user', () => {
+    let createdUser: InferSelectModel<typeof databaseSchema.users>;
+    beforeEach(() => {
+      createdUser = {
+        ...signUpData,
+        id: 1,
+        addressId: null,
+      };
+      drizzleInsertReturningMock.mockResolvedValue([createdUser]);
+    });
+    it('should return the user as well', async () => {
+      const result = await authenticationService.signUp(signUpData);
+      expect(result).toBe(createdUser);
+    });
+  });
+  describe('when the DrizzleService throws the UniqueViolation error', () => {
+    beforeEach(() => {
+      const databaseError: DatabaseError = {
+        code: PostgresErrorCode.UniqueViolation,
+        table: 'users',
+        detail: 'Key (email)=(john@smith.com) already exists.',
+      };
+      drizzleInsertReturningMock.mockImplementation(() => {
+        throw databaseError;
+      });
+    });
+    it('should throw the ConflictException', () => {
+      return expect(async () => {
+        await authenticationService.signUp(signUpData);
+      }).rejects.toThrow(UserAlreadyExistsException);
     });
   });
 });
