@@ -56,11 +56,6 @@ export class ArticlesService {
             address: true,
           },
         },
-        categoriesArticles: {
-          with: {
-            category: true,
-          },
-        },
       },
       where: eq(databaseSchema.articles.id, articleId),
     });
@@ -68,33 +63,17 @@ export class ArticlesService {
     if (!article) {
       throw new NotFoundException();
     }
-
-    const categories = article.categoriesArticles.map(
-      ({ category }) => category,
-    );
-
-    return {
-      id: article.id,
-      author: article.author,
-      title: article.title,
-      paragraphs: article.paragraphs,
-      scheduledDate: article.scheduledDate,
-      categories,
-    };
+    return article;
   }
 
   async create(article: CreateArticleDto, authorId: number) {
-    if (article.categoryIds?.length) {
-      return this.createWithCategories(article, authorId);
-    }
     try {
       const createdArticles = await this.drizzleService.db
         .insert(databaseSchema.articles)
         .values({
           authorId,
           title: article.title,
-          paragraphs: article.paragraphs,
-          scheduledDate: article.scheduledDate,
+          content: article.content,
         })
         .returning();
 
@@ -113,34 +92,6 @@ export class ArticlesService {
       }
       throw error;
     }
-  }
-
-  async createWithCategories(article: CreateArticleDto, authorId: number) {
-    return this.drizzleService.db.transaction(async (transaction) => {
-      const createdArticles = await transaction
-        .insert(databaseSchema.articles)
-        .values({
-          authorId,
-          title: article.title,
-          paragraphs: article.paragraphs,
-          scheduledDate: article.scheduledDate,
-        })
-        .returning();
-
-      const createdArticle = createdArticles[0];
-
-      await transaction.insert(databaseSchema.categoriesArticles).values(
-        article.categoryIds.map((categoryId) => ({
-          categoryId,
-          articleId: createdArticle.id,
-        })),
-      );
-
-      return {
-        ...createdArticle,
-        categoryIds: article.categoryIds,
-      };
-    });
   }
 
   async update(id: number, article: UpdateArticleDto) {
@@ -166,15 +117,5 @@ export class ArticlesService {
     if (deletedArticles.length === 0) {
       throw new NotFoundException();
     }
-  }
-
-  async getScheduledForToday() {
-    await this.drizzleService.db.refreshMaterializedView(
-      databaseSchema.articlesScheduledForToday,
-    );
-
-    return this.drizzleService.db
-      .select()
-      .from(databaseSchema.articlesScheduledForToday);
   }
 }

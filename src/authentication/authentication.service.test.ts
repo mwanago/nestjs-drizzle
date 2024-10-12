@@ -71,7 +71,6 @@ describe('The AuthenticationService', () => {
       createdUser = {
         ...signUpData,
         id: 1,
-        addressId: null,
       };
       drizzleInsertReturningMock.mockResolvedValue([createdUser]);
     });

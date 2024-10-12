@@ -3,7 +3,7 @@ import {
   Injectable,
   NotFoundException,
 } from '@nestjs/common';
-import { AddressDto, UserDto } from './user.dto';
+import { UserDto } from './user.dto';
 import { DrizzleService } from '../database/drizzle.service';
 import { databaseSchema } from '../database/database-schema';
 import { eq } from 'drizzle-orm';
@@ -18,9 +18,6 @@ export class UsersService {
 
   async getByEmail(email: string) {
     const user = await this.drizzleService.db.query.users.findFirst({
-      with: {
-        address: true,
-      },
       where: eq(databaseSchema.users.email, email),
     });
 
@@ -33,9 +30,6 @@ export class UsersService {
 
   async getById(id: number) {
     const user = await this.drizzleService.db.query.users.findFirst({
-      with: {
-        address: true,
-      },
       where: eq(databaseSchema.users.id, id),
     });
 
@@ -47,10 +41,6 @@ export class UsersService {
   }
 
   async create(user: UserDto) {
-    if (user.address) {
-      return this.createWithAddress(user, user.address);
-    }
-
     try {
       const createdUsers = await this.drizzleService.db
         .insert(databaseSchema.users)
@@ -67,38 +57,6 @@ export class UsersService {
       }
       throw error;
     }
-  }
-
-  async createWithAddress(user: UserDto, address: AddressDto) {
-    return this.drizzleService.db.transaction(async (transaction) => {
-      const createdAddresses = await transaction
-        .insert(databaseSchema.addresses)
-        .values(address)
-        .returning();
-
-      const createdAddress = createdAddresses[0];
-
-      try {
-        const createdUsers = await transaction
-          .insert(databaseSchema.users)
-          .values({
-            name: user.name,
-            email: user.email,
-            password: user.password,
-            addressId: createdAddress?.id,
-          })
-          .returning();
-        return createdUsers.pop();
-      } catch (error) {
-        if (
-          isDatabaseError(error) &&
-          error.code === PostgresErrorCode.UniqueViolation
-        ) {
-          throw new UserAlreadyExistsException(user.email);
-        }
-        throw error;
-      }
-    });
   }
 
   async delete(userId: number, transaction?: PostgresTransaction) {
