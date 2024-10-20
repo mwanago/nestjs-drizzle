@@ -1,1 +1,0 @@
-ALTER TABLE "articles" ADD CHECK(length(title) > 0);

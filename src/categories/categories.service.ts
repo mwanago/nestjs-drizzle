@@ -2,17 +2,14 @@ import { Injectable, NotFoundException } from '@nestjs/common';
 import { CategoryDto } from './dto/category.dto';
 import { DrizzleService } from '../database/drizzle.service';
 import { databaseSchema } from '../database/database-schema';
-import { eq, sql, and, isNull } from 'drizzle-orm';
+import { eq } from 'drizzle-orm';
 
 @Injectable()
 export class CategoriesService {
   constructor(private readonly drizzleService: DrizzleService) {}
 
   getAll() {
-    return this.drizzleService.db
-      .select()
-      .from(databaseSchema.categories)
-      .where(isNull(databaseSchema.categories.deletedAt));
+    return this.drizzleService.db.select().from(databaseSchema.categories);
   }
 
   async getById(categoryId: number) {
@@ -24,10 +21,7 @@ export class CategoriesService {
           },
         },
       },
-      where: and(
-        eq(databaseSchema.categories.id, categoryId),
-        isNull(databaseSchema.categories.deletedAt),
-      ),
+      where: eq(databaseSchema.categories.id, categoryId),
     });
 
     if (!category) {
@@ -58,12 +52,7 @@ export class CategoriesService {
     const updatedCategories = await this.drizzleService.db
       .update(databaseSchema.categories)
       .set(data)
-      .where(
-        and(
-          eq(databaseSchema.categories.id, id),
-          isNull(databaseSchema.categories.deletedAt),
-        ),
-      )
+      .where(eq(databaseSchema.categories.id, id))
       .returning();
 
     if (updatedCategories.length === 0) {
@@ -75,36 +64,12 @@ export class CategoriesService {
 
   async delete(id: number) {
     const deletedCategories = await this.drizzleService.db
-      .update(databaseSchema.categories)
-      .set({
-        deletedAt: sql`now()`,
-      })
-      .where(
-        and(
-          eq(databaseSchema.categories.id, id),
-          isNull(databaseSchema.categories.deletedAt),
-        ),
-      )
+      .delete(databaseSchema.categories)
+      .where(eq(databaseSchema.categories.id, id))
       .returning();
 
     if (deletedCategories.length === 0) {
       throw new NotFoundException();
     }
-  }
-
-  async restore(id: number) {
-    const restoredCategories = await this.drizzleService.db
-      .update(databaseSchema.categories)
-      .set({
-        deletedAt: null,
-      })
-      .where(eq(databaseSchema.categories.id, id))
-      .returning();
-
-    if (restoredCategories.length === 0) {
-      throw new NotFoundException();
-    }
-
-    return restoredCategories.pop();
   }
 }

@@ -5,12 +5,7 @@ import {
   MinLength,
   IsPhoneNumber,
   IsOptional,
-  ValidateNested,
-  IsObject,
 } from 'class-validator';
-import { AddressDto } from './address-dto';
-import { Type } from 'class-transformer';
-import { CanBeUndefined } from '../../utilities/can-be-undefined';
 
 export class SignUpDto {
   @IsString()
@@ -30,10 +25,4 @@ export class SignUpDto {
   @IsPhoneNumber()
   @IsOptional()
   phoneNumber?: string;
-
-  @CanBeUndefined()
-  @Type(() => AddressDto)
-  @IsObject()
-  @ValidateNested()
-  address?: AddressDto;
 }

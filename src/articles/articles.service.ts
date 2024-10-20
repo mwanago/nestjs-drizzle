@@ -77,8 +77,7 @@ export class ArticlesService {
       id: article.id,
       author: article.author,
       title: article.title,
-      paragraphs: article.paragraphs,
-      scheduledDate: article.scheduledDate,
+      content: article.content,
       categories,
     };
   }
@@ -93,8 +92,7 @@ export class ArticlesService {
         .values({
           authorId,
           title: article.title,
-          paragraphs: article.paragraphs,
-          scheduledDate: article.scheduledDate,
+          content: article.content,
         })
         .returning();
 
@@ -122,8 +120,7 @@ export class ArticlesService {
         .values({
           authorId,
           title: article.title,
-          paragraphs: article.paragraphs,
-          scheduledDate: article.scheduledDate,
+          content: article.content,
         })
         .returning();
 
@@ -166,15 +163,5 @@ export class ArticlesService {
     if (deletedArticles.length === 0) {
       throw new NotFoundException();
     }
-  }
-
-  async getScheduledForToday() {
-    await this.drizzleService.db.refreshMaterializedView(
-      databaseSchema.articlesScheduledForToday,
-    );
-
-    return this.drizzleService.db
-      .select()
-      .from(databaseSchema.articlesScheduledForToday);
   }
 }

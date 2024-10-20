@@ -8,9 +8,9 @@ import {
 import { Type } from 'class-transformer';
 
 export class CreateArticleDto {
-  @IsString({ each: true })
-  @IsNotEmpty({ each: true })
-  paragraphs: string[];
+  @IsString()
+  @IsNotEmpty()
+  content: string;
 
   @IsString()
   @IsNotEmpty()
