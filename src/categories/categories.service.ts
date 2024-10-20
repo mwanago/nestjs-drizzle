@@ -21,6 +21,7 @@ export class CategoriesService {
           },
         },
         parentCategory: true,
+        nestedCategories: true,
       },
       where: eq(databaseSchema.categories.id, categoryId),
     });
@@ -35,6 +36,7 @@ export class CategoriesService {
       id: category.id,
       name: category.name,
       parentCategory: category.parentCategory,
+      nestedCategories: category.nestedCategories,
       articles,
     };
   }

@@ -60,6 +60,10 @@ export const categoriesRelations = relations(categories, ({ one, many }) => ({
   parentCategory: one(categories, {
     fields: [categories.parentCategoryId],
     references: [categories.id],
+    relationName: 'nested_categories',
+  }),
+  nestedCategories: many(categories, {
+    relationName: 'nested_categories',
   }),
 }));
 
