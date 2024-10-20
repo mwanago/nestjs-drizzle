@@ -8,6 +8,13 @@
       "when": 1729425800894,
       "tag": "0000_add-articles-users-categories",
       "breakpoints": true
+    },
+    {
+      "idx": 1,
+      "version": "7",
+      "when": 1729457854676,
+      "tag": "0001_add-parent-category-id",
+      "breakpoints": true
     }
   ]
 }

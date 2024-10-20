@@ -31,7 +31,7 @@ export class CategoriesController {
   }
 
   @Post()
-  @UseGuards(JwtAuthenticationGuard)
+  // @UseGuards(JwtAuthenticationGuard)
   create(@Body() data: CategoryDto) {
     return this.categoriesService.create(data);
   }

@@ -20,6 +20,7 @@ export class CategoriesService {
             article: true,
           },
         },
+        parentCategory: true,
       },
       where: eq(databaseSchema.categories.id, categoryId),
     });
@@ -33,6 +34,7 @@ export class CategoriesService {
     return {
       id: category.id,
       name: category.name,
+      parentCategory: category.parentCategory,
       articles,
     };
   }
@@ -42,6 +44,7 @@ export class CategoriesService {
       .insert(databaseSchema.categories)
       .values({
         name: data.name,
+        parentCategoryId: data.parentCategoryId,
       })
       .returning();
 

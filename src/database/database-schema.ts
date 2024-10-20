@@ -4,6 +4,7 @@ import {
   integer,
   pgTable,
   primaryKey,
+  AnyPgColumn,
 } from 'drizzle-orm/pg-core';
 import { relations } from 'drizzle-orm';
 
@@ -26,6 +27,9 @@ export const articles = pgTable('articles', {
 export const categories = pgTable('categories', {
   id: serial('id').primaryKey(),
   name: text('title').notNull(),
+  parentCategoryId: integer('parent_category_id').references(
+    (): AnyPgColumn => categories.id,
+  ),
 });
 
 export const categoriesArticles = pgTable(
@@ -51,8 +55,12 @@ export const articlesRelations = relations(articles, ({ one, many }) => ({
   categoriesArticles: many(categoriesArticles),
 }));
 
-export const categoriesRelations = relations(categories, ({ many }) => ({
+export const categoriesRelations = relations(categories, ({ one, many }) => ({
   categoriesArticles: many(categoriesArticles),
+  parentCategory: one(categories, {
+    fields: [categories.parentCategoryId],
+    references: [categories.id],
+  }),
 }));
 
 export const categoriesArticlesRelations = relations(
