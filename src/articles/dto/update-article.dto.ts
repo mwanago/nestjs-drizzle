@@ -4,11 +4,11 @@ import { CanBeUndefined } from '../../utilities/can-be-undefined';
 export class UpdateArticleDto {
   @IsString()
   @IsNotEmpty()
-  @IsOptional()
+  @CanBeUndefined()
   title?: string;
 
   @IsString()
   @IsNotEmpty()
-  @CanBeUndefined()
+  @IsOptional()
   content?: string;
 }
