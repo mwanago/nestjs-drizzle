@@ -7,24 +7,18 @@ import {
   ParseIntPipe,
   Patch,
   Post,
-  Query,
-  Req,
-  UseGuards,
 } from '@nestjs/common';
 import { ArticlesService } from './articles.service';
 import { CreateArticleDto } from './dto/create-article.dto';
 import { UpdateArticleDto } from './dto/update-article.dto';
-import { JwtAuthenticationGuard } from '../authentication/jwt-authentication.guard';
-import { RequestWithUser } from '../authentication/request-with-user.interface';
-import { PaginationParamsDto } from '../utilities/pagination-params.dto';
 
 @Controller('articles')
 export class ArticlesController {
   constructor(private readonly articlesService: ArticlesService) {}
 
   @Get()
-  getAll(@Query() paginationParams: PaginationParamsDto) {
-    return this.articlesService.getAll(paginationParams);
+  getAll() {
+    return this.articlesService.getAll();
   }
 
   @Get(':id')
@@ -33,9 +27,8 @@ export class ArticlesController {
   }
 
   @Post()
-  @UseGuards(JwtAuthenticationGuard)
-  create(@Body() article: CreateArticleDto, @Req() request: RequestWithUser) {
-    return this.articlesService.create(article, request.user.id);
+  create(@Body() article: CreateArticleDto) {
+    return this.articlesService.create(article);
   }
 
   @Patch(':id')

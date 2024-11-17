@@ -1,27 +1,12 @@
-import {
-  IsString,
-  IsNotEmpty,
-  IsOptional,
-  IsNumber,
-  IsDate,
-} from 'class-validator';
-import { Type } from 'class-transformer';
+import { IsString, IsNotEmpty, IsOptional } from 'class-validator';
 
 export class CreateArticleDto {
   @IsString()
   @IsNotEmpty()
-  content: string;
+  title: string;
 
   @IsString()
   @IsNotEmpty()
-  title: string;
-
   @IsOptional()
-  @IsNumber({}, { each: true })
-  categoryIds: number[] = [];
-
-  @IsDate()
-  @Type(() => Date)
-  @IsOptional()
-  scheduledDate?: Date;
+  content?: string;
 }
