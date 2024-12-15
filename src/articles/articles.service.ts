@@ -1,10 +1,9 @@
 import { Injectable, NotFoundException } from '@nestjs/common';
 import { DrizzleService } from '../database/drizzle.service';
 import { databaseSchema } from '../database/database-schema';
-import { eq } from 'drizzle-orm';
+import { eq, like } from 'drizzle-orm';
 import { CreateArticleDto } from './dto/create-article.dto';
 import { UpdateArticleDto } from './dto/update-article.dto';
-import { ReplaceArticleDto } from './dto/replace-article.dto';
 
 @Injectable()
 export class ArticlesService {
@@ -12,6 +11,13 @@ export class ArticlesService {
 
   getAll() {
     return this.drizzleService.db.select().from(databaseSchema.articles);
+  }
+
+  search(pattern: string) {
+    return this.drizzleService.db
+      .select()
+      .from(databaseSchema.articles)
+      .where(like(databaseSchema.articles.title, `%${pattern}%`));
   }
 
   async getById(articleId: number) {
@@ -39,23 +45,6 @@ export class ArticlesService {
   }
 
   async update(id: number, article: UpdateArticleDto) {
-    const updatedArticles = await this.drizzleService.db
-      .update(databaseSchema.articles)
-      .set({
-        title: article.title,
-        content: article.content,
-      })
-      .where(eq(databaseSchema.articles.id, id))
-      .returning();
-
-    if (updatedArticles.length === 0) {
-      throw new NotFoundException();
-    }
-
-    return updatedArticles.pop();
-  }
-
-  async replace(id: number, article: ReplaceArticleDto) {
     const updatedArticles = await this.drizzleService.db
       .update(databaseSchema.articles)
       .set({

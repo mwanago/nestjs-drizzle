@@ -7,19 +7,22 @@ import {
   ParseIntPipe,
   Patch,
   Post,
-  Put,
+  Query,
 } from '@nestjs/common';
 import { ArticlesService } from './articles.service';
 import { CreateArticleDto } from './dto/create-article.dto';
 import { UpdateArticleDto } from './dto/update-article.dto';
-import { ReplaceArticleDto } from './dto/replace-article.dto';
+import { SearchArticlesQuery } from './dto/search-articles-query.dto';
 
 @Controller('articles')
 export class ArticlesController {
   constructor(private readonly articlesService: ArticlesService) {}
 
   @Get()
-  getAll() {
+  getAll(@Query() { search }: SearchArticlesQuery) {
+    if (search) {
+      return this.articlesService.search(search);
+    }
     return this.articlesService.getAll();
   }
 
@@ -39,14 +42,6 @@ export class ArticlesController {
     @Body() article: UpdateArticleDto,
   ) {
     return this.articlesService.update(id, article);
-  }
-
-  @Put(':id')
-  replace(
-    @Param('id', ParseIntPipe) id: number,
-    @Body() article: ReplaceArticleDto,
-  ) {
-    return this.articlesService.replace(id, article);
   }
 
   @Delete(':id')

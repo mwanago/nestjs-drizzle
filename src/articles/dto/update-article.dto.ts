@@ -9,6 +9,5 @@ export class UpdateArticleDto {
 
   @IsString()
   @IsNotEmpty()
-  @IsOptional()
-  content?: string | null;
+  content?: string;
 }

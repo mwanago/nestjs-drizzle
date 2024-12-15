@@ -1,12 +1,8 @@
 import { IsString, IsNotEmpty, IsOptional } from 'class-validator';
 
-export class ReplaceArticleDto {
-  @IsString()
-  @IsNotEmpty()
-  title: string;
-
+export class SearchArticlesQuery {
   @IsString()
   @IsNotEmpty()
   @IsOptional()
-  content: string | null = null;
+  search?: string;
 }
