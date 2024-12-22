@@ -1,6 +1,6 @@
 export class UserDto {
   email: string;
-  name: string;
+  firstName: string;
+  lastName: string;
   password: string;
-  phoneNumber?: string;
 }

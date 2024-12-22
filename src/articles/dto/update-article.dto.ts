@@ -1,6 +1,5 @@
-import { IsString, IsNotEmpty, IsOptional, IsDate } from 'class-validator';
+import { IsString, IsNotEmpty } from 'class-validator';
 import { CanBeUndefined } from '../../utilities/can-be-undefined';
-import { Type } from 'class-transformer';
 
 export class UpdateArticleDto {
   @IsString()
@@ -12,9 +11,4 @@ export class UpdateArticleDto {
   @IsNotEmpty()
   @CanBeUndefined()
   title?: string;
-
-  @IsDate()
-  @Type(() => Date)
-  @IsOptional()
-  scheduledDate?: Date;
 }

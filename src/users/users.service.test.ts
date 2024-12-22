@@ -37,7 +37,8 @@ describe('The UsersService', () => {
         user = {
           id: 1,
           email: 'john@smith.com',
-          name: 'John',
+          firstName: 'John',
+          lastName: 'Smith',
           password: 'strongPassword123',
         };
         findFirstMock.mockResolvedValue(user);

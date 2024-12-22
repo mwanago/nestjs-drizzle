@@ -27,9 +27,9 @@ describe('The AuthenticationService', () => {
     drizzleInsertReturningMock = jest.fn().mockResolvedValue([]);
     signUpData = {
       email: 'john@smith.com',
-      name: 'John',
+      firstName: 'John',
+      lastName: 'Smith',
       password: 'strongPassword123',
-      phoneNumber: '123456789',
     };
     const module = await Test.createTestingModule({
       providers: [
