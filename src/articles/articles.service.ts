@@ -1,7 +1,7 @@
 import { Injectable, NotFoundException } from '@nestjs/common';
 import { DrizzleService } from '../database/drizzle.service';
 import { databaseSchema } from '../database/database-schema';
-import { eq, like } from 'drizzle-orm';
+import { and, eq, gte, like, lt, sql } from 'drizzle-orm';
 import { CreateArticleDto } from './dto/create-article.dto';
 import { UpdateArticleDto } from './dto/update-article.dto';
 
@@ -11,6 +11,24 @@ export class ArticlesService {
 
   getAll() {
     return this.drizzleService.db.select().from(databaseSchema.articles);
+  }
+
+  private getArticlesFromYesterdayStatement = this.drizzleService.db
+    .select()
+    .from(databaseSchema.articles)
+    .where(
+      and(
+        gte(
+          databaseSchema.articles.createdAt,
+          sql`current_date - interval '1 day'`,
+        ),
+        lt(databaseSchema.articles.createdAt, sql`current_date`),
+      ),
+    )
+    .prepare('get_articles_from_yesterday');
+
+  getAllFromYesterday() {
+    return this.getArticlesFromYesterdayStatement.execute();
   }
 
   search(pattern: string) {
