@@ -13,22 +13,22 @@ export class ArticlesService {
     return this.drizzleService.db.select().from(databaseSchema.articles);
   }
 
-  private getArticlesFromYesterdayStatement = this.drizzleService.db
+  private getArticlesBetweenDatesStatement = this.drizzleService.db
     .select()
     .from(databaseSchema.articles)
     .where(
       and(
-        gte(
-          databaseSchema.articles.createdAt,
-          sql`current_date - interval '1 day'`,
-        ),
-        lt(databaseSchema.articles.createdAt, sql`current_date`),
+        gte(databaseSchema.articles.createdAt, sql.placeholder('startingDate')),
+        lt(databaseSchema.articles.createdAt, sql.placeholder('endingDate')),
       ),
     )
-    .prepare('get_articles_from_yesterday');
+    .prepare('get_articles_between_dates');
 
-  getAllFromYesterday() {
-    return this.getArticlesFromYesterdayStatement.execute();
+  getArticlesBetweenDates(startingDate: Date, endingDate: Date) {
+    return this.getArticlesBetweenDatesStatement.execute({
+      startingDate,
+      endingDate,
+    });
   }
 
   search(pattern: string) {
