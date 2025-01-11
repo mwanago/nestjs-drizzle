@@ -1,7 +1,7 @@
 import { Injectable, NotFoundException } from '@nestjs/common';
 import { DrizzleService } from '../database/drizzle.service';
 import { databaseSchema } from '../database/database-schema';
-import { eq, sql } from 'drizzle-orm';
+import { ne, eq, sql, and } from 'drizzle-orm';
 import { LocationDto } from './dto/location.dto';
 
 @Injectable()
@@ -56,5 +56,21 @@ export class LocationsService {
     }
 
     return distance;
+  }
+
+  getLocationsInRadius(locationId: number, radiusInMeters: number) {
+    return this.drizzleService.db
+      .select()
+      .from(databaseSchema.locations)
+      .where(
+        and(
+          ne(databaseSchema.locations.id, locationId),
+          sql`ST_DWithin(
+            ${databaseSchema.locations.coordinates}::geography,
+            (SELECT ${databaseSchema.locations.coordinates}::geography FROM ${databaseSchema.locations} WHERE id = ${locationId}),
+            ${radiusInMeters}
+          )`,
+        ),
+      );
   }
 }
