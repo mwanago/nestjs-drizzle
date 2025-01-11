@@ -1,7 +1,7 @@
 import { Injectable, NotFoundException } from '@nestjs/common';
 import { DrizzleService } from '../database/drizzle.service';
 import { databaseSchema } from '../database/database-schema';
-import { eq } from 'drizzle-orm';
+import { eq, sql } from 'drizzle-orm';
 import { LocationDto } from './dto/location.dto';
 
 @Injectable()
@@ -34,5 +34,27 @@ export class LocationsService {
       .returning();
 
     return createdLocations.pop();
+  }
+
+  async getDistanceBetweenLocations(
+    firstLocationId: number,
+    secondLocationId: number,
+  ) {
+    const queryResult = await this.drizzleService.db.execute(
+      sql`
+        SELECT ST_DistanceSphere(
+          (SELECT coordinates FROM ${databaseSchema.locations} WHERE id = ${firstLocationId}),
+          (SELECT coordinates FROM ${databaseSchema.locations} WHERE id = ${secondLocationId})
+        ) AS distance;
+      `,
+    );
+
+    const distance = queryResult.rows.pop()?.distance;
+
+    if (distance === null) {
+      throw new NotFoundException();
+    }
+
+    return distance;
   }
 }
