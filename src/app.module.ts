@@ -1,13 +1,13 @@
 import { Module } from '@nestjs/common';
 import { ConfigModule, ConfigService } from '@nestjs/config';
 import * as Joi from 'joi';
-import { ArticlesModule } from './articles/articles.module';
+import { LocationsModule } from './locations/locations.module';
 import { DatabaseModule } from './database/database.module';
 import { EnvironmentVariables } from './utilities/environment-variables';
 
 @Module({
   imports: [
-    ArticlesModule,
+    LocationsModule,
     DatabaseModule.forRootAsync({
       imports: [ConfigModule],
       inject: [ConfigService],

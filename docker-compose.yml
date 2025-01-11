@@ -2,7 +2,7 @@ version: "3"
 services:
   postgres:
     container_name: postgres-nestjs-drizzle
-    image: postgres:13.15
+    image: postgis/postgis:13-3.3
     ports:
       - "5432:5432"
     volumes:

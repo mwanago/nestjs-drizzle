@@ -1,11 +1,11 @@
 {
-  "id": "bcc3b198-9ff9-48c4-96de-e61278d08ee7",
+  "id": "3dc82523-0238-4f6d-9631-de27b8899aca",
   "prevId": "00000000-0000-0000-0000-000000000000",
   "version": "7",
   "dialect": "postgresql",
   "tables": {
-    "public.articles": {
-      "name": "articles",
+    "public.locations": {
+      "name": "locations",
       "schema": "",
       "columns": {
         "id": {
@@ -14,15 +14,15 @@
           "primaryKey": true,
           "notNull": true
         },
-        "title": {
-          "name": "title",
+        "name": {
+          "name": "name",
           "type": "text",
           "primaryKey": false,
           "notNull": true
         },
-        "content": {
-          "name": "content",
-          "type": "text",
+        "coordinates": {
+          "name": "coordinates",
+          "type": "geometry(point)",
           "primaryKey": false,
           "notNull": true
         }

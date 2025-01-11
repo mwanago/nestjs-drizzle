@@ -5,15 +5,8 @@
     {
       "idx": 0,
       "version": "7",
-      "when": 1734286357731,
-      "tag": "0000_create-articles-table",
-      "breakpoints": true
-    },
-    {
-      "idx": 1,
-      "version": "7",
-      "when": 1735491354622,
-      "tag": "0001_add-created-at-to-articles",
+      "when": 1736565534718,
+      "tag": "0000_add-locations-table",
       "breakpoints": true
     }
   ]
