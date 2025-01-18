@@ -4,10 +4,12 @@ import * as Joi from 'joi';
 import { LocationsModule } from './locations/locations.module';
 import { DatabaseModule } from './database/database.module';
 import { EnvironmentVariables } from './utilities/environment-variables';
+import { AreasModule } from './areas/areas.module';
 
 @Module({
   imports: [
     LocationsModule,
+    AreasModule,
     DatabaseModule.forRootAsync({
       imports: [ConfigModule],
       inject: [ConfigService],

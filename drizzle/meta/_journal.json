@@ -8,6 +8,13 @@
       "when": 1736568281095,
       "tag": "0000_add-locations-table",
       "breakpoints": true
+    },
+    {
+      "idx": 1,
+      "version": "7",
+      "when": 1737232612294,
+      "tag": "0001_add-areas-table",
+      "breakpoints": true
     }
   ]
 }
