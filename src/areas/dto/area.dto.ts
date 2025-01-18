@@ -1,12 +1,11 @@
-import {
-  IsString,
-  IsNotEmpty,
-} from "class-validator";
+import { IsString, IsNotEmpty, Validate } from 'class-validator';
+import { ArePolygonCoordinates } from './ArePolygonCoordinates';
 
 export class AreaDto {
   @IsString()
   @IsNotEmpty()
   name: string;
 
-  coordinates: unknown;
+  @Validate(ArePolygonCoordinates)
+  polygon: [number, number][][];
 }

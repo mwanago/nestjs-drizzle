@@ -29,15 +29,7 @@ export class AreasService {
       .insert(databaseSchema.areas)
       .values({
         name: area.name,
-        polygon: [
-          [
-            [-73.981898, 40.768094], // Northwest corner
-            [-73.958094, 40.800621], // Northeast corner
-            [-73.949282, 40.796853], // Southeast corner
-            [-73.973057, 40.764356], // Southwest corner
-            [-73.981898, 40.768094], // Closing the polygon
-          ],
-        ],
+        polygon: area.polygon,
       })
       .returning();
 
