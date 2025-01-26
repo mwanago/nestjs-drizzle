@@ -40,8 +40,8 @@ export class AreasService {
     const queryResult = await this.drizzleService.db.execute(
       sql`
         SELECT ST_Intersects(
-          (SELECT polygon FROM ${databaseSchema.areas} WHERE id = ${firstAreaId}),
-          (SELECT polygon FROM ${databaseSchema.areas} WHERE id = ${secondAreaId})
+          (SELECT ${databaseSchema.areas.polygon} FROM ${databaseSchema.areas} WHERE id = ${firstAreaId}),
+          (SELECT ${databaseSchema.areas.polygon} FROM ${databaseSchema.areas} WHERE id = ${secondAreaId})
         ) AS "areAreasOverlapping";
       `,
     );
@@ -53,5 +53,29 @@ export class AreasService {
     }
 
     return areAreasOverlapping;
+  }
+
+  async doesAreaContainCoordinates(
+    areaId: number,
+    longitude: number,
+    latitude: number,
+  ) {
+    const queryResult = await this.drizzleService.db.execute(
+      sql`
+        SELECT ST_Within(
+          ST_SetSRID(ST_MakePoint(${longitude}, ${latitude}), 4326),
+          (SELECT ${databaseSchema.areas.polygon} FROM ${databaseSchema.areas} WHERE id = ${areaId})
+        ) AS "doesAreaContainCoordinates";
+      `,
+    );
+
+    const doesAreaContainCoordinates =
+      queryResult.rows.pop()?.doesAreaContainCoordinates;
+
+    if (doesAreaContainCoordinates === null) {
+      throw new NotFoundException();
+    }
+
+    return doesAreaContainCoordinates;
   }
 }
