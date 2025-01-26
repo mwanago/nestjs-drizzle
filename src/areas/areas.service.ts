@@ -1,7 +1,7 @@
 import { Injectable, NotFoundException } from '@nestjs/common';
 import { DrizzleService } from '../database/drizzle.service';
 import { databaseSchema } from '../database/database-schema';
-import { eq } from 'drizzle-orm';
+import { eq, sql } from 'drizzle-orm';
 import { AreaDto } from './dto/area.dto';
 
 @Injectable()
@@ -34,5 +34,24 @@ export class AreasService {
       .returning();
 
     return createdAreas.pop();
+  }
+
+  async areAreasOverlapping(firstAreaId: number, secondAreaId: number) {
+    const queryResult = await this.drizzleService.db.execute(
+      sql`
+        SELECT ST_Intersects(
+          (SELECT polygon FROM ${databaseSchema.areas} WHERE id = ${firstAreaId}),
+          (SELECT polygon FROM ${databaseSchema.areas} WHERE id = ${secondAreaId})
+        ) AS "areAreasOverlapping";
+      `,
+    );
+
+    const areAreasOverlapping = queryResult.rows.pop()?.areAreasOverlapping;
+
+    if (areAreasOverlapping === null) {
+      throw new NotFoundException();
+    }
+
+    return areAreasOverlapping;
   }
 }
