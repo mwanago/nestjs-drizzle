@@ -1,4 +1,8 @@
-import { Injectable, NotFoundException } from '@nestjs/common';
+import {
+  Injectable,
+  InternalServerErrorException,
+  NotFoundException,
+} from '@nestjs/common';
 import { DrizzleService } from '../database/drizzle.service';
 import { databaseSchema } from '../database/database-schema';
 import { eq, sql } from 'drizzle-orm';
@@ -49,6 +53,7 @@ export class AreasService {
     const areAreasOverlapping = queryResult.rows.pop()?.areAreasOverlapping;
 
     if (areAreasOverlapping === null) {
+      // One of the provided area ids don't exist in the database
       throw new NotFoundException();
     }
 
@@ -73,9 +78,37 @@ export class AreasService {
       queryResult.rows.pop()?.doesAreaContainCoordinates;
 
     if (doesAreaContainCoordinates === null) {
+      // The provided area id does not exist in the database
       throw new NotFoundException();
     }
 
     return doesAreaContainCoordinates;
+  }
+
+  async getAreasIntersection(firstAreaId: number, secondAreaId: number) {
+    const queryResult = await this.drizzleService.db.execute(
+      sql`
+        SELECT ST_AsGeoJSON(
+          ST_Intersection(
+            (SELECT ${databaseSchema.areas.polygon} FROM ${databaseSchema.areas} WHERE id = ${firstAreaId}),
+            (SELECT ${databaseSchema.areas.polygon} FROM ${databaseSchema.areas} WHERE id = ${secondAreaId})
+          )
+        ) AS "areasIntersection";
+      `,
+    );
+
+    const areasIntersection = queryResult.rows.pop()?.areasIntersection;
+
+    if (areasIntersection === null) {
+      // One of the provided area ids don't exist in the database
+      throw new NotFoundException();
+    }
+
+    if (typeof areasIntersection !== 'string') {
+      throw new InternalServerErrorException();
+    }
+
+    // GeoJSON should be safe to parse as JSON
+    return JSON.parse(areasIntersection);
   }
 }
