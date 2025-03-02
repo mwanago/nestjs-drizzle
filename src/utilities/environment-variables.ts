@@ -6,4 +6,6 @@ export interface EnvironmentVariables {
   POSTGRES_DB: string;
   JWT_SECRET: string;
   JWT_EXPIRATION_TIME: number;
+  THROTTLER_TTL_SECONDS: string;
+  THROTTLER_LIMIT: string;
 }

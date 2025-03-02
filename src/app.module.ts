@@ -5,6 +5,7 @@ import { ArticlesModule } from './articles/articles.module';
 import { DatabaseModule } from './database/database.module';
 import { AuthenticationModule } from './authentication/authentication.module';
 import { EnvironmentVariables } from './utilities/environment-variables';
+import { ThrottlerModule } from '@nestjs/throttler';
 
 @Module({
   imports: [
@@ -30,7 +31,19 @@ import { EnvironmentVariables } from './utilities/environment-variables';
         POSTGRES_USER: Joi.string().required(),
         POSTGRES_PASSWORD: Joi.string().required(),
         POSTGRES_DB: Joi.string().required(),
+        THROTTLER_TTL_SECONDS: Joi.number().required(),
+        THROTTLER_LIMIT: Joi.number().required(),
       }),
+    }),
+    ThrottlerModule.forRootAsync({
+      imports: [ConfigModule],
+      inject: [ConfigService],
+      useFactory: (config: ConfigService<EnvironmentVariables, true>) => [
+        {
+          ttl: config.get('THROTTLER_TTL_SECONDS'),
+          limit: config.get('THROTTLER_LIMIT'),
+        },
+      ],
     }),
   ],
 })
