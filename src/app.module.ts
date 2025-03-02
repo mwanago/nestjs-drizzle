@@ -5,7 +5,8 @@ import { ArticlesModule } from './articles/articles.module';
 import { DatabaseModule } from './database/database.module';
 import { AuthenticationModule } from './authentication/authentication.module';
 import { EnvironmentVariables } from './utilities/environment-variables';
-import { ThrottlerModule } from '@nestjs/throttler';
+import { seconds, ThrottlerGuard, ThrottlerModule } from '@nestjs/throttler';
+import { APP_GUARD } from '@nestjs/core';
 
 @Module({
   imports: [
@@ -40,11 +41,17 @@ import { ThrottlerModule } from '@nestjs/throttler';
       inject: [ConfigService],
       useFactory: (config: ConfigService<EnvironmentVariables, true>) => [
         {
-          ttl: config.get('THROTTLER_TTL_SECONDS'),
+          ttl: seconds(config.get('THROTTLER_TTL_SECONDS')),
           limit: config.get('THROTTLER_LIMIT'),
         },
       ],
     }),
+  ],
+  providers: [
+    {
+      provide: APP_GUARD,
+      useClass: ThrottlerGuard,
+    },
   ],
 })
 export class AppModule {}
